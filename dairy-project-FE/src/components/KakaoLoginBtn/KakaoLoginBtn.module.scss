@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+
+  div:first-child {
+    width: 295px;
+    height: 24.3px;
+    position: absolute;
+    top: -18px;
+    left: 1px;
+    background-color: #fae10092;
+  }
+
+  div:nth-child(2) {
+    width: 295px;
+    height: 24.3px;
+    position: absolute;
+    top: -5px;
+    left: 10px;
+    background-color: #fae10092;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+  }
+}
