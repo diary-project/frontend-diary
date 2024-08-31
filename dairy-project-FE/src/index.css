@@ -58,7 +58,7 @@ body {
   height: 100%;
   font-size: 16px;
   color: #2a2927;
-  background-color: #e9e3d7;
+  background-color: #fdfaf4;
 }
 
 #root {
@@ -74,4 +74,11 @@ button {
   outline: none;
   border: none;
   background: none;
+  cursor: pointer;
+}
+
+input {
+  border: none;
+  outline: none;
+  background-color: transparent;
 }

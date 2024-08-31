@@ -3,11 +3,24 @@ import prevBtn from '../../assets/images/prev-btn.svg';
 import nextBtn from '../../assets/images/next-btn.svg';
 import useYearMonth from '../../hooks/useYearMonth';
 
-function CalendarHeader({ dynamicDay, setNow, now }) {
+function CalendarHeader({ dynamicDay, setNow }) {
   const [disabled, setDisabled] = useState(false);
   const currentDay = useYearMonth(new Date());
+  const pureKoreanMonth = [
+    '해오름달',
+    '시샘달',
+    '물오름달',
+    '잎새달',
+    '푸른달',
+    '누리달',
+    '견우직녀달',
+    '타오름달',
+    '열매달',
+    '하늘연달',
+    '미름달',
+    '매듭달',
+  ];
   console.log(dynamicDay);
-  console.log(currentDay);
 
   // 연도가 현재 연도보다 크거나, 현재 년도 기준으로 달이 현재 달보다 크면 true
   useEffect(() => {
@@ -45,7 +58,7 @@ function CalendarHeader({ dynamicDay, setNow, now }) {
       <div>
         <p>{dynamicDay.year}</p>
         <p>{dynamicDay.month}</p>
-        <p>타오름달</p>
+        <p>{`${pureKoreanMonth[dynamicDay.month - 1]}`}</p>
       </div>
       <button onClick={handleNextMonth} disabled={disabled}>
         <img src={nextBtn} alt="다음달" />
