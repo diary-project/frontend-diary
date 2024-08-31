@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './D_SIGNIN_000.module.scss';
 import KakaoLoginBtn from '../../components/KakaoLoginBtn/KakaoLoginBtn';
 
 function D_SIGNIN_000() {
+  const [code, setCode] = useState(null);
   const handleKakaoLogin = () => {
     // 카카오 동의 페이지
-    window.location.href = 'https://b65c-183-98-32-151.ngrok-free.app/oauth/login';
   };
 
   return (
