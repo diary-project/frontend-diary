@@ -3,9 +3,9 @@ import styles from './D_SIGNIN_000.module.scss';
 import KakaoLoginBtn from '../../components/KakaoLoginBtn/KakaoLoginBtn';
 
 function D_SIGNIN_000() {
-  const [code, setCode] = useState(null);
   const handleKakaoLogin = () => {
     // 카카오 동의 페이지
+    window.location.href = import.meta.env.VITE_REDIRECT_URI;
   };
 
   return (
