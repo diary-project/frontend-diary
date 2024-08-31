@@ -40,7 +40,8 @@
       button {
         cursor: pointer;
         &:disabled {
-          display: none;
+          opacity: 0;
+          cursor: default;
         }
       }
 
