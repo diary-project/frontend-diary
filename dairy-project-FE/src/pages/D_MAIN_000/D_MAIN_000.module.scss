@@ -39,6 +39,9 @@
 
       button {
         cursor: pointer;
+        &:disabled {
+          display: none;
+        }
       }
 
       div {
