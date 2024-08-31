@@ -17,7 +17,7 @@ function App() {
         <Route path="/my-page" element={<D_MY_000 />}></Route>
         <Route path="/write" element={<D_WRITE_000 />}></Route>
         <Route path="/read" element={<D_READ_000 />}></Route>
-        <Route path="/oauth/kakao/callback/" element={<KakaoCallback />}></Route>
+        <Route path="/oauth/kakao/callback" element={<KakaoCallback />}></Route>
         <Route path="/error/report" element={<Error />}></Route>
       </Routes>
     </>
