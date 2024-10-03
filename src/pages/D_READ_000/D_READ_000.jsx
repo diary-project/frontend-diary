@@ -74,16 +74,20 @@ export default D_READ_000;
 
 const ReadContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  max-width: 700px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4rem;
 
   main {
+    width: 100%;
     height: 100%;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
+    margin-top: 64px;
   }
 `;
 
@@ -126,7 +130,7 @@ const DiaryImage = styled.div`
 `;
 
 const Content = styled.div`
-  width: 375px;
+  width: 100%;
   height: 223px;
   margin-bottom: 2rem;
   overflow-y: auto;

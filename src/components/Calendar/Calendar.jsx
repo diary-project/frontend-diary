@@ -6,6 +6,9 @@ import circleIco from '../../assets/images/icons/circleIco.svg';
 
 const Section = styled.section`
   width: 100%;
+  height: auto;
+  min-width: 300px;
+  max-width: 700px;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -13,7 +16,7 @@ const Section = styled.section`
 
 const Days = styled.article`
   width: 100%;
-  height: 4vh;
+  height: 50px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -24,7 +27,7 @@ const Days = styled.article`
   p {
     width: calc(100% / 7);
     height: 100%;
-    font-size: 24px;
+    font-size: clamp(24px, 2vw, 28px);
     font-weight: 400;
     display: flex;
     justify-content: center;
@@ -55,7 +58,7 @@ const DateButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 5vw;
+  font-size: clamp(16px, 7vw, 36px);
   color: #1d1d1b;
   border-top: 1px solid #2a2927;
   border-right: 1px solid #2a2927;

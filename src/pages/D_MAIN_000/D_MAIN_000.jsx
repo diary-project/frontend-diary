@@ -60,11 +60,12 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5rem;
+  gap: 2rem;
 `;
 
 const MainHeader = styled.header`
   width: 100%;
+  max-width: 700px;
   height: 54px;
   display: flex;
   justify-content: space-between;
@@ -79,6 +80,18 @@ const MainHeader = styled.header`
     width: 36px;
     object-fit: cover;
   }
+
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 24px;
+      font-family: 'Yuni_ddingddang';
+    }
+
+    img {
+      width: 30px;
+      object-fit: cover;
+    }
+  }
 `;
 
 const CalendarWrapper = styled.main`
@@ -86,10 +99,10 @@ const CalendarWrapper = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4rem;
+  gap: 2rem;
 `;
 
 const Description = styled.p`
   font-family: 'Yuni_ddingddang';
-  font-size: 7vw;
+  font-size: clamp(24px, 7vw, 40px);
 `;

@@ -130,6 +130,7 @@ const displayCancelBtn = keyframes`
 
 const MyPageContainer = styled.div`
   width: 100%;
+  max-width: 700px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -159,6 +160,10 @@ const UserNameInput = styled.input`
   color: ${(props) => (!props.errorMessage ? 'black' : 'red')};
   border-bottom: ${(props) => (!props.errorMessage ? '1px solid black' : '1px solid red')};
   animation: ${stretchInput} 1s ease-in-out forwards;
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -193,13 +198,22 @@ const ValidAlert = styled.div`
   p {
     color: #eb3030;
   }
+
+  @media (max-width: 480px) {
+    img {
+      width: 18px;
+    }
+    p {
+      font-size: 12px;
+      color: #eb3030;
+    }
+  }
 `;
 
 const UnDoButton = styled.button`
   position: absolute;
   top: 10%;
   right: 7px;
-  // transform: translateY(-50%);
   animation: ${displayCancelBtn} 2s ease-in-out forwards;
 
   img {
@@ -209,6 +223,10 @@ const UnDoButton = styled.button`
   img:hover {
     filter: brightness(80%);
     transition: filter 0.3s ease;
+  }
+
+  @media (max-width: 480px) {
+    top: 5%;
   }
 `;
 
@@ -235,6 +253,10 @@ const UtilityButtons = styled.div`
     &:disabled {
       color: #a5a5a5;
       border: 2px solid #a5a5a5;
+    }
+
+    @media (max-width: 480px) {
+      padding: 1rem;
     }
   }
 `;

@@ -35,6 +35,7 @@ const WeatherIcoContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-left: 0.8rem;
   gap: 12px;
 
   button {

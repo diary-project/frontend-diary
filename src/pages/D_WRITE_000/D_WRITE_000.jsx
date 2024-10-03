@@ -4,6 +4,7 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import WeatherIcons from '../../components/WeatherIcons/WeatherIcons';
+import CommonHeader from '../../components/CommonHeader/CommonHeader';
 
 function D_WRITE_000() {
   const [storedValue] = useLocalStorage('USER_TOKEN');
@@ -76,6 +77,7 @@ function D_WRITE_000() {
   return (
     <>
       <WriteContainer>
+        <CommonHeader />
         <Title>오늘 하루를 기록해보세요</Title>
         <ContentWrapper>
           <Header>
@@ -108,13 +110,15 @@ function D_WRITE_000() {
 export default D_WRITE_000;
 
 const WriteContainer = styled.div`
-  width: 375px;
-  height: 100vh;
+  width: 100%;
+  max-width: 700px;
+  height: 100%;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
+  margin-top: 64px;
 `;
 
 const Title = styled.h2`
@@ -124,7 +128,9 @@ const Title = styled.h2`
 `;
 
 const ContentWrapper = styled.div`
-  height: 420px;
+  height: 100%;
+  min-height: 400px;
+  max-height: 600px;
   display: flex;
   flex-direction: column;
   border: 1px solid black;
@@ -133,7 +139,7 @@ const ContentWrapper = styled.div`
 
 const Header = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid black;
   padding: 1rem 0.6rem;
@@ -169,12 +175,11 @@ const TextLength = styled.p`
 
 const SubmitButton = styled.button`
   width: 100%;
+  max-width: 636px;
   height: 52px;
   font-size: 16px;
-  position: absolute;
-  left: 50%;
-  bottom: 32px;
-  transform: translateX(-50%);
+  position: sticky;
+  left: 0px;
   color: white;
   background-color: #2a2927;
 `;

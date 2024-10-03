@@ -74,6 +74,7 @@ export default CalendarHeader;
 
 const Header = styled.section`
   width: 100%;
+  max-width: 700px;
   display: flex;
   justify-content: space-between;
 `;
