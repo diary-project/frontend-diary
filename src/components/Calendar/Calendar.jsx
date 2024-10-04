@@ -172,6 +172,7 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
 
   const handleClick = async (event, el) => {
     event.preventDefault();
+    console.log(el, Number(date));
 
     if (el === null) return;
 
@@ -180,7 +181,7 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
     const diaryDataValid = userData.includes(formattedDate);
 
     if (el === Number(date) && !diaryDataValid) {
-      navigate('/write');
+      navigate(`write`);
     } else if (!diaryDataValid) {
       console.log('일기 없음');
       return;
@@ -209,7 +210,7 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
               $isToday={year === matchedYear && month === Number(matchedMonth) && el === Number(date)}
               $isFuture={year === matchedYear && month === Number(matchedMonth) && el > Number(date)}
               $isNull={el === null}
-              $isDiary={!hasData}
+              $isDiary={el !== Number(date) && !hasData}
             >
               {el}
               {/* 로딩 중일 때 스켈레톤 UI 표시 */}
