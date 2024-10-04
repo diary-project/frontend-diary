@@ -181,7 +181,7 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
     const diaryDataValid = userData.includes(formattedDate);
 
     if (el === Number(date) && !diaryDataValid) {
-      navigate(`write`);
+      navigate(`write/${formattedDate}`);
     } else if (!diaryDataValid) {
       console.log('일기 없음');
       return;
