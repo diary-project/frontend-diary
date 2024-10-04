@@ -7,8 +7,8 @@ function CommonHeader() {
   const navigate = useNavigate();
   return (
     <Header>
-      <button onClick={() => navigate(-1)}>
-        <img src={prevPageBtn} alt="이전페이지" />
+      <button onClick={() => navigate('/')}>
+        <img src={prevPageBtn} alt="메인페이지로 돌아가기" />
       </button>
     </Header>
   );
