@@ -36,6 +36,29 @@ function D_READ_000() {
     navigate(`/write/${date}`);
   };
 
+  console.log(date);
+
+  const handleDeleteContent = async () => {
+    const userAgree = confirm('일기를 정말로 지우시겠어요?');
+    if (userAgree) {
+      try {
+        const response = await client.delete(`/diary/${date}/`, {
+          headers: {
+            Authorization: `Bearer ${storedValue.access}`,
+          },
+        });
+        console.log(response.data.data);
+        const data = await response.data.data;
+        alert('일기가 정상적으로 삭제되었어요!');
+        navigate('/');
+        console.log(data);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+    }
+  };
+
   useEffect(() => {
     getDiaryData();
   }, []);
@@ -61,7 +84,7 @@ function D_READ_000() {
             </Tag>
             <UtilityButtons>
               <button onClick={handleEditContent}>수정</button>
-              <button>삭제</button>
+              <button onClick={handleDeleteContent}>삭제</button>
             </UtilityButtons>
           </Diary>
         </main>
