@@ -201,7 +201,7 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
         {calendarArr.map((el, idx) => {
           const formattedEl = el !== null ? String(el).padStart(2, '0') : null;
           const formattedDate = formattedEl ? `${matchedYear}-${matchedMonth}-${formattedEl}` : null;
-          const hasData = formattedDate ? userData.includes(formattedDate) : false;
+          const hasData = formattedDate ? userData?.includes(formattedDate) : false;
 
           return (
             <DateButton
