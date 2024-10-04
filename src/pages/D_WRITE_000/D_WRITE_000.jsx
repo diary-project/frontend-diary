@@ -16,6 +16,7 @@ function D_WRITE_000() {
     weather: null,
   });
   const currentDay = new window.Date();
+  const paramDate = Number(params.date.split('-').join('').slice(6));
   const month = currentDay.getMonth() + 1;
   const date = currentDay.getDate();
 
@@ -63,19 +64,18 @@ function D_WRITE_000() {
       });
       const data = await response.data.data;
 
-      if (!data) {
-        return;
-      } else {
-        setDiaryData(data);
-        console.log(diaryData);
-        if (diaryData) {
-          alert('오늘의 일기를 이미 작성하셨어요!');
-          navigate('/');
-        }
+      setDiaryData(data);
+      console.log(diaryData);
+      if (diaryData) {
+        alert('일기를 이미 작성하셨어요!');
+        navigate('/');
       }
     } catch (err) {
-      console.error(err);
-      navigate('/');
+      if (paramDate === date) {
+        return;
+      } else {
+        navigate('/');
+      }
     }
   };
 
@@ -91,7 +91,7 @@ function D_WRITE_000() {
         <Title>오늘 하루를 기록해보세요</Title>
         <ContentWrapper>
           <Header>
-            <Date>{`${diaryData}`}</Date>
+            <Date>{`${month}월 ${date}일`}</Date>
             <WeatherIcons
               diaryData={diaryData}
               setDiaryData={setDiaryData}
