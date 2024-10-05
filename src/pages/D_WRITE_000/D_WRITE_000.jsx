@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { client } from '../../axios/client';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import WeatherIcons from '../../components/WeatherIcons/WeatherIcons';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
@@ -10,6 +10,7 @@ function D_WRITE_000() {
   const [storedValue] = useLocalStorage('USER_TOKEN');
   const navigate = useNavigate();
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const [clickedId, setClickedId] = useState(null);
   const [diaryData, setDiaryData] = useState({
     content: '',
@@ -17,8 +18,14 @@ function D_WRITE_000() {
   });
   const currentDay = new window.Date();
   const paramDate = Number(params.date.split('-').join('').slice(6));
+  const editMonth = params.date.split('-').join('').slice(4, 6);
+  const editDate = params.date.split('-').join('').slice(6);
+
+  console.log(editMonth);
   const month = currentDay.getMonth() + 1;
   const date = currentDay.getDate();
+
+  const isEditMode = searchParams.get('mode') === 'edit';
 
   console.log(params);
 
@@ -63,13 +70,7 @@ function D_WRITE_000() {
         },
       });
       const data = await response.data.data;
-
       setDiaryData(data);
-      console.log(diaryData);
-      if (diaryData) {
-        alert('일기를 이미 작성하셨어요!');
-        navigate('/');
-      }
     } catch (err) {
       if (paramDate === date) {
         return;
@@ -79,10 +80,40 @@ function D_WRITE_000() {
     }
   };
 
+  const putUserData = async () => {
+    try {
+      const response = await client.put(
+        `/diary/${params.date}/`,
+        {
+          user: `${storedValue.access}`,
+          date: `${params.date}`,
+          content: diaryData?.content,
+          weather: diaryData?.weather,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${storedValue.access}`,
+          },
+        }
+      );
+      const data = await response.data.data;
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getUserData();
     console.log(diaryData);
-  }, []);
+
+    if (isEditMode) {
+      return;
+    } else if (!isEditMode && diaryData.content && diaryData.weather) {
+      alert('일기를 이미 작성하셨어요!');
+      navigate('/');
+    }
+  }, [isEditMode]);
 
   return (
     <>
@@ -91,7 +122,7 @@ function D_WRITE_000() {
         <Title>오늘 하루를 기록해보세요</Title>
         <ContentWrapper>
           <Header>
-            <Date>{`${month}월 ${date}일`}</Date>
+            <Date>{isEditMode ? `${editMonth}월 ${editDate}일` : `${month}월 ${date}일`}</Date>
             <WeatherIcons
               diaryData={diaryData}
               setDiaryData={setDiaryData}
@@ -107,7 +138,11 @@ function D_WRITE_000() {
           ></TextArea>
         </ContentWrapper>
         <TextLength>{`${diaryData?.content ? diaryData?.content?.length : 0}/1000`}</TextLength>
-        {diaryData?.content?.length > 0 ? <SubmitButton onClick={handleSubmit}>오늘의 일기 끝</SubmitButton> : null}
+        {diaryData?.content?.length > 0 ? (
+          <SubmitButton onClick={isEditMode ? putUserData : handleSubmit}>
+            {isEditMode ? '오늘의 일기 수정 끝' : '오늘의 일기 끝'}
+          </SubmitButton>
+        ) : null}
       </WriteContainer>
     </>
   );
