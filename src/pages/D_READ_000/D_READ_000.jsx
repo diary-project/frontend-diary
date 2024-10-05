@@ -33,7 +33,7 @@ function D_READ_000() {
   };
 
   const handleEditContent = () => {
-    navigate(`/write/${date}`);
+    navigate(`/write/${date}/?mode=edit`);
   };
 
   console.log(date);
