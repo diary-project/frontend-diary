@@ -134,7 +134,7 @@ const SkeletonUI = styled.div`
   width: 100%;
   height: 100%;
   background-color: #f0f0f0;
-  animation: ${pulse} 1.5s infinite; /* 애니메이션 적용 */
+  animation: ${pulse} 0.3s infinite; /* 애니메이션 적용 */
 `;
 
 function Calendar({ calendarArr, dynamicDay, storedValue }) {
@@ -178,9 +178,10 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
 
     const formattedEl = String(el).padStart(2, '0');
     const formattedDate = `${matchedYear}-${matchedMonth}-${formattedEl}`;
-    const diaryDataValid = userData.includes(formattedDate);
+    const diaryDataValid = userData?.includes(formattedDate);
+    console.log('month: ', month, 'matchedMonth: ', matchedMonth);
 
-    if (el === Number(date) && !diaryDataValid) {
+    if (month === Number(matchedMonth) && el === Number(date) && !diaryDataValid) {
       navigate(`write/${formattedDate}`);
     } else if (!diaryDataValid) {
       console.log('일기 없음');
@@ -203,6 +204,8 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
           const formattedDate = formattedEl ? `${matchedYear}-${matchedMonth}-${formattedEl}` : null;
           const hasData = formattedDate ? userData?.includes(formattedDate) : false;
 
+          console.log(month, Number(matchedMonth));
+
           return (
             <DateButton
               key={idx}
@@ -210,7 +213,7 @@ function Calendar({ calendarArr, dynamicDay, storedValue }) {
               $isToday={year === matchedYear && month === Number(matchedMonth) && el === Number(date)}
               $isFuture={year === matchedYear && month === Number(matchedMonth) && el > Number(date)}
               $isNull={el === null}
-              $isDiary={el !== Number(date) && !hasData}
+              $isDiary={!(year === matchedYear && month === Number(matchedMonth) && el === Number(date)) && !hasData}
             >
               {el}
               {/* 로딩 중일 때 스켈레톤 UI 표시 */}
