@@ -1,57 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import prevBtn from '../../assets/images/prev-btn.svg';
 import nextBtn from '../../assets/images/next-btn.svg';
-import useYearMonth from '../../hooks/useYearMonth';
-import useLocalStorage from '../../hooks/useLocalStorage';
+import useYearMonth from '../../utils/getYearMonth';
 import styled from 'styled-components';
+import { pureKoreanMonth } from '../../constants/translatedCalendar';
 
 function CalendarHeader({ dynamicDay, setNow }) {
   const [disabled, setDisabled] = useState(false);
+
+  // 현재 날짜는 한번만 계산하여 사용
   const currentDay = useYearMonth(new Date());
-  const pureKoreanMonth = [
-    '해오름달',
-    '시샘달',
-    '물오름달',
-    '잎새달',
-    '푸른달',
-    '누리달',
-    '견우직녀달',
-    '타오름달',
-    '열매달',
-    '하늘연달',
-    '미름달',
-    '매듭달',
-  ];
 
   // 연도가 현재 연도보다 크거나, 현재 년도 기준으로 달이 현재 달보다 크면 true
   useEffect(() => {
-    if (
-      dynamicDay.year > currentDay.year ||
-      (dynamicDay.year === currentDay.year && dynamicDay.month >= currentDay.month)
-    ) {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-
-    console.log(dynamicDay, currentDay);
+    setDisabled(
+      dynamicDay.year > currentDay.year || (dynamicDay.year === currentDay.year && dynamicDay.month >= currentDay.month)
+    );
   }, [dynamicDay, currentDay]);
 
-  const handlePrevMonth = () => {
+  // 핸들러 함수를 useCallback으로 최적화
+  const handlePrevMonth = useCallback(() => {
     setNow((prev) => {
       const prevDate = new Date(prev);
       prevDate.setMonth(prev.getMonth() - 1);
       return prevDate;
     });
-  };
+  }, [setNow]);
 
-  const handleNextMonth = () => {
+  const handleNextMonth = useCallback(() => {
     setNow((prev) => {
       const nextDate = new Date(prev);
       nextDate.setMonth(prev.getMonth() + 1);
       return nextDate;
     });
-  };
+  }, [setNow]);
 
   return (
     <Header>
@@ -104,6 +86,7 @@ const Button = styled.button`
   cursor: pointer;
   &:disabled {
     opacity: 0;
+    visibility: hidden;
     cursor: default;
   }
 `;

@@ -3,7 +3,7 @@ import { weatherIco } from '../../assets/images/weatherIcons/weatherIco';
 import styled from 'styled-components';
 
 function WeatherIcons({ clickedId, setClickedId, diaryData, setDiaryData }) {
-  const handleTempToggle = (id) => {
+  const handleIconToggle = (id) => {
     if (clickedId === id) {
       setClickedId(null); // 클릭 해제
     } else {
@@ -21,7 +21,7 @@ function WeatherIcons({ clickedId, setClickedId, diaryData, setDiaryData }) {
   return (
     <WeatherIcoContainer>
       {weatherIco?.map((ico) => (
-        <button key={ico.id} onClick={() => handleTempToggle(ico.id)}>
+        <button key={ico.id} onClick={() => handleIconToggle(ico.id)}>
           <img src={clickedId === ico.id ? ico.hover : ico.img} alt={ico.id} />
         </button>
       ))}

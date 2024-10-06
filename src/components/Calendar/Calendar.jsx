@@ -1,8 +1,90 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { client } from '../../axios/client';
-import circleIco from '../../assets/images/icons/circleIco.svg';
+import styled from 'styled-components';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import WeekHeader from './WeekHeader';
+import { useQuery } from '@tanstack/react-query';
+import { fetchAllDiaryData } from '../../apis/apis';
+import { getCurrentDateInfo } from '../../utils/getCurrentDateInfo';
+import DateButton from './DateButton';
+
+const Calendar = ({ calendarArr, dynamicDay }) => {
+  const navigate = useNavigate();
+  const [storedValue] = useLocalStorage('USER_TOKEN');
+  const { currentDate, currentYear, currentMonth, targetMonth, targetYear, formattedQuery } =
+    getCurrentDateInfo(dynamicDay);
+
+  const {
+    isLoading,
+    data: userData,
+    refetch,
+  } = useQuery({
+    queryKey: ['allDiaries', formattedQuery],
+    queryFn: () => fetchAllDiaryData(formattedQuery, storedValue.access),
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  const handleClick = (event, date) => {
+    event.preventDefault();
+    if (date === null) return;
+
+    const formattedEl = String(date).padStart(2, '0');
+    const formattedDate = `${targetYear}-${targetMonth}-${formattedEl}`;
+    const hasData = userData?.includes(formattedDate);
+
+    if (hasData) {
+      // 만약 클릭된 일수에 해당하는 데이터가있다면 => 해당 날짜의 read 페이지로 이동
+      navigate(`/read/${formattedDate}`);
+    } else if (date === Number(currentDate) && Number(currentMonth) === Number(targetMonth)) {
+      // 만약 클릭된 일수가 오늘 날짜이지만 일기 데이터가 없다면 => write 페이지로 이동
+      navigate(`write/${formattedDate}`);
+    } else {
+      // 만약 클릭된 일수에 해당하는 데이터가 없고, 오늘 날짜도 아니면,
+      console.log('일기 없음');
+    }
+  };
+
+  return (
+    <Section>
+      <WeekHeader />
+      <Dates>
+        {calendarArr.map((arrNum, idx) => {
+          const formattedEl = arrNum !== null ? String(arrNum).padStart(2, '0') : null;
+          const formattedDate = formattedEl ? `${targetYear}-${targetMonth}-${formattedEl}` : null;
+          const hasData = formattedDate ? userData?.includes(formattedDate) : false;
+
+          const isToday =
+            currentYear === targetYear &&
+            Number(currentMonth) === Number(targetMonth) &&
+            arrNum === Number(currentDate);
+
+          const isFuture =
+            currentYear === targetYear && Number(currentMonth) === Number(targetMonth) && arrNum > Number(currentDate);
+
+          const isDiary = !isToday && !hasData;
+
+          return (
+            <DateButton
+              key={idx}
+              date={arrNum}
+              onClick={handleClick}
+              hasData={hasData}
+              isToday={isToday}
+              isFuture={isFuture}
+              isDiary={isDiary}
+              isLoading={isLoading}
+            />
+          );
+        })}
+      </Dates>
+    </Section>
+  );
+};
 
 const Section = styled.section`
   width: 100%;
@@ -14,35 +96,6 @@ const Section = styled.section`
   gap: 0.8rem;
 `;
 
-const Days = styled.article`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  border: 3px solid #2a2927;
-  border-radius: 17px;
-  background-color: #f6f4f1;
-
-  p {
-    width: calc(100% / 7);
-    height: 100%;
-    font-size: clamp(24px, 2vw, 28px);
-    font-weight: 400;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-right: 1px solid #2a2927;
-
-    &:first-child {
-      color: #ff2222;
-    }
-    &:last-child {
-      border: none;
-    }
-  }
-`;
-
 const Dates = styled.article`
   width: 100%;
   display: grid;
@@ -51,181 +104,5 @@ const Dates = styled.article`
   border-radius: 17px;
   overflow: hidden;
 `;
-
-const DateButton = styled.button`
-  max-width: 100%;
-  aspect-ratio: 1/1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: clamp(16px, 7vw, 36px);
-  color: #1d1d1b;
-  border-top: 1px solid #2a2927;
-  border-right: 1px solid #2a2927;
-  margin: 0;
-  background-color: #f6f4f1;
-  cursor: pointer;
-  position: relative; /* 아이콘을 버튼 안에 배치하기 위해 position 사용 */
-
-  &:hover {
-    background-color: #d8d5d2;
-  }
-
-  &:nth-child(-n + 7) {
-    border-top: none;
-  }
-
-  &:nth-child(7n) {
-    border-right: none;
-  }
-
-  &:nth-child(7n + 1) {
-    color: #ff2222;
-  }
-
-  ${(props) =>
-    props.$isToday &&
-    `
-      background-color: #e2ded7;
-    `}
-
-  ${(props) =>
-    props.$isFuture &&
-    `
-      opacity: 0.6;
-      pointer-events: none;
-    `}
-
-  ${(props) =>
-    props.$isNull &&
-    `
-      pointer-events: none;
-    `}
-
-  ${(props) =>
-    props.$isDiary &&
-    `
-    pointer-events: none;
-  `}
-`;
-
-const CircleIcon = styled.img`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-`;
-
-const pulse = keyframes`
-  0% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.7;
-  }
-`;
-
-const SkeletonUI = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #f0f0f0;
-  animation: ${pulse} 0.3s infinite; /* 애니메이션 적용 */
-`;
-
-function Calendar({ calendarArr, dynamicDay, storedValue }) {
-  const [userData, setUserData] = useState([]); // 초기값을 빈 객체로 설정
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  const week = ['일', '월', '화', '수', '목', '금', '토'];
-  const currentDay = new Date();
-  const date = String(currentDay.getDate()).padStart(2, '0');
-  const year = currentDay.getFullYear();
-  const month = currentDay.getMonth() + 1;
-  const matchedMonth = String(dynamicDay.month).padStart(2, '0');
-  const matchedYear = dynamicDay.year;
-
-  useEffect(() => {
-    setIsLoading(true);
-    const formattedDate = `year=${matchedYear}&month=${matchedMonth}`;
-    const getDiaryDataForDate = async (formattedDate) => {
-      try {
-        const response = await client.get(`/diary/?${formattedDate}`, {
-          headers: {
-            Authorization: `Bearer ${storedValue.access}`,
-          },
-        });
-        console.log(response.data.data.dates);
-        setUserData(response.data.data.dates);
-        setIsLoading(false);
-      } catch (err) {
-        return null;
-      }
-    };
-
-    getDiaryDataForDate(formattedDate);
-  }, [dynamicDay, calendarArr]);
-
-  const handleClick = async (event, el) => {
-    event.preventDefault();
-    console.log(el, Number(date));
-
-    if (el === null) return;
-
-    const formattedEl = String(el).padStart(2, '0');
-    const formattedDate = `${matchedYear}-${matchedMonth}-${formattedEl}`;
-    const diaryDataValid = userData?.includes(formattedDate);
-    console.log('month: ', month, 'matchedMonth: ', matchedMonth);
-
-    if (month === Number(matchedMonth) && el === Number(date) && !diaryDataValid) {
-      navigate(`write/${formattedDate}`);
-    } else if (!diaryDataValid) {
-      console.log('일기 없음');
-      return;
-    } else if (diaryDataValid) {
-      navigate(`/read/${formattedDate}`);
-    }
-  };
-
-  return (
-    <Section>
-      <Days>
-        {week.map((el, idx) => (
-          <p key={idx}>{el}</p>
-        ))}
-      </Days>
-      <Dates>
-        {calendarArr.map((el, idx) => {
-          const formattedEl = el !== null ? String(el).padStart(2, '0') : null;
-          const formattedDate = formattedEl ? `${matchedYear}-${matchedMonth}-${formattedEl}` : null;
-          const hasData = formattedDate ? userData?.includes(formattedDate) : false;
-
-          console.log(month, Number(matchedMonth));
-
-          return (
-            <DateButton
-              key={idx}
-              onClick={(event) => handleClick(event, el)}
-              $isToday={year === matchedYear && month === Number(matchedMonth) && el === Number(date)}
-              $isFuture={year === matchedYear && month === Number(matchedMonth) && el > Number(date)}
-              $isNull={el === null}
-              $isDiary={!(year === matchedYear && month === Number(matchedMonth) && el === Number(date)) && !hasData}
-            >
-              {el}
-              {/* 로딩 중일 때 스켈레톤 UI 표시 */}
-              {isLoading && <SkeletonUI />}
-              {/* 로딩이 완료되고 userData에서 해당 데이터가 존재할 때 아이콘 표시 */}
-              {!isLoading && hasData && <CircleIcon src={circleIco} />}
-            </DateButton>
-          );
-        })}
-      </Dates>
-    </Section>
-  );
-}
 
 export default Calendar;

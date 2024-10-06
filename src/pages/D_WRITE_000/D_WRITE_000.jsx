@@ -108,7 +108,7 @@ function D_WRITE_000() {
 
     if (isEditMode) {
       return;
-    } else if (!isEditMode && diaryData.content !== undefined && diaryData.weather !== undefined) {
+    } else if (!isEditMode && diaryData.content !== '' && diaryData.weather !== '') {
       navigate('/');
     }
   }, [isEditMode]);
@@ -202,6 +202,7 @@ const Date = styled.p`
 
 const TextArea = styled.textarea`
   height: 100%;
+  min-height: 400px;
   font-size: 24px;
 `;
 
