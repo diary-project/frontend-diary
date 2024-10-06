@@ -14,7 +14,7 @@ function D_WRITE_000() {
   const [clickedId, setClickedId] = useState(null);
   const [diaryData, setDiaryData] = useState({
     content: '',
-    weather: null,
+    weather: '',
   });
   const currentDay = new window.Date();
   const paramDate = Number(params.date.split('-').join('').slice(6));
@@ -44,7 +44,7 @@ function D_WRITE_000() {
   const postUserData = async () => {
     try {
       const response = await client.post(
-        '/diary/',
+        `/diary/`,
         {
           ...diaryData,
         },
@@ -85,8 +85,6 @@ function D_WRITE_000() {
       const response = await client.put(
         `/diary/${params.date}/`,
         {
-          user: `${storedValue.access}`,
-          date: `${params.date}`,
           content: diaryData?.content,
           weather: diaryData?.weather,
         },
@@ -98,6 +96,7 @@ function D_WRITE_000() {
       );
       const data = await response.data.data;
       console.log(data);
+      navigate(`/read/${params.date}`);
     } catch (error) {
       console.error(error);
     }
@@ -109,8 +108,7 @@ function D_WRITE_000() {
 
     if (isEditMode) {
       return;
-    } else if (!isEditMode && diaryData.content && diaryData.weather) {
-      alert('일기를 이미 작성하셨어요!');
+    } else if (!isEditMode && diaryData.content !== undefined && diaryData.weather !== undefined) {
       navigate('/');
     }
   }, [isEditMode]);
