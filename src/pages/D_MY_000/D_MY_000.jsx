@@ -3,15 +3,16 @@ import cancelBtn from '../../assets/images/cancel-btn.svg';
 import alertInfoIco from '../../assets/images/circle-alert.svg';
 import CommonHeader from '../../components/CommonHeader/CommonHeader';
 import { useNavigate } from 'react-router-dom';
-import useFetchUserData from '../../hooks/useFetchUserData';
 import styled, { keyframes } from 'styled-components';
+import { client } from '../../axios/client';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 function D_MY_000() {
   const [inputValue, setInputValue] = useState('');
   const [isInputValid, setIsInputValid] = useState(false);
+  const [userName, setUserName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const { userData } = useFetchUserData();
-  const userName = userData?.nickname;
+  const [storedValue] = useLocalStorage('USER_TOKEN');
   console.log(userName);
   const navigate = useNavigate();
 
@@ -24,8 +25,50 @@ function D_MY_000() {
     setInputValue('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const userConfirm = confirm(`정말로 닉네임을 ${inputValue}로 변경하시겠어요?`);
+    if (userConfirm) {
+      try {
+        const response = await client.put(
+          '/user/nickname/',
+          {
+            nickname: inputValue,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${storedValue.access}`,
+            },
+          }
+        );
+
+        const data = await response.data;
+        console.log(data);
+
+        setUserName(data.nickname);
+        setInputValue('');
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      return;
+    }
+  };
+
+  const getUserNickName = async () => {
+    try {
+      const response = await client.get('/user/nickname', {
+        headers: {
+          Authorization: `Bearer ${storedValue.access}`,
+        },
+      });
+
+      const data = await response.data;
+      console.log(data);
+      setUserName(data.nickname);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleLogout = (e) => {
@@ -69,6 +112,10 @@ function D_MY_000() {
     setIsInputValid(isValid);
   }, [inputValue]);
 
+  useEffect(() => {
+    getUserNickName();
+  }, [userName]);
+
   return (
     <>
       <CommonHeader />
@@ -76,7 +123,7 @@ function D_MY_000() {
         <form>
           <UserNameInput
             type="text"
-            placeholder={`${userName}`}
+            placeholder={userName}
             value={inputValue}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
